@@ -6,7 +6,7 @@ COMPUTER_MARKER = 'O'
 def joinor(arr, sep = ', ', for_last_ele = 'or')
   last_one = arr.pop
   str = arr.join(sep)
-  puts "#{str.concat(" #{for_last_ele}"," #{last_one}")}"
+  puts "#{str.concat(" #{for_last_ele}", " #{last_one}")}"
 end
 
 WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
@@ -46,7 +46,6 @@ end
 
 def empty_squares(brd)
   brd.keys.select { |num| brd[num] == INITIAL_MARKER }
-
 end
 
 def player_places_piece!(brd)
@@ -60,9 +59,25 @@ def player_places_piece!(brd)
   brd[square] = PLAYER_MARKER
 end
 
+def find_at_risk_square(brd)
+  ind = []
+  ind = WINNING_LINES.select do |lines|
+    brd.values_at(*lines).count(PLAYER_MARKER) == 2
+  end
+  ind = ind.flatten
+  value = ind.index do |x|
+    brd[x] == ' '
+  end
+  brd[ind[value]] = COMPUTER_MARKER
+end
+
 def computer_places_piece!(brd)
-  square = empty_squares(brd).sample
-  brd[square] = COMPUTER_MARKER
+  if immediate_threat(brd)
+    find_at_risk_square(brd)
+  else
+    square = empty_squares(brd).sample
+    brd[square] = COMPUTER_MARKER
+  end
 end
 
 def board_full?(brd)
@@ -72,7 +87,6 @@ end
 def someone_won?(brd)
   !!detect_winner(brd)
 end
-
 
 def detect_winner(brd)
   WINNING_LINES.each do |line|
@@ -94,6 +108,18 @@ def detect_winner(brd)
   nil
 end
 
+def immediate_threat(brd)
+  arr = []
+  arr << WINNING_LINES.select do |lines|
+    brd.values_at(*lines).count(PLAYER_MARKER) == 2
+  end
+  arr.flatten!
+  if arr.empty?
+    return false
+  else
+    return true
+  end
+end
 
 computer_wins = 0
 player_wins = 0
@@ -134,8 +160,6 @@ loop do
       end
     end
   end
-
-
 end
 prompt "Player won #{player_wins} times."
 prompt "Computer won #{computer_wins} times."
