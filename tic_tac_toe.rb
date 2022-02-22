@@ -71,9 +71,38 @@ def find_at_risk_square(brd)
   brd[ind[value]] = COMPUTER_MARKER
 end
 
+def computer_offence(brd)
+  ind = []
+  ind = WINNING_LINES.select do |lines|
+    brd.values_at(*lines).count(COMPUTER_MARKER) == 2 &&
+    brd.values_at(*lines).count(INITIAL_MARKER) == 1
+  end
+  ind = ind.flatten
+  value = ind.index do |x|
+    brd[x] == ' '
+  end
+  brd[ind[value]] = COMPUTER_MARKER
+end
+
+def computer_chance?(brd)
+  arr = []
+  arr << WINNING_LINES.select do |lines|
+    brd.values_at(*lines).count(COMPUTER_MARKER) == 2 &&
+    brd.values_at(*lines).count(INITIAL_MARKER) == 1
+  end
+  arr.flatten!
+  if arr.empty?
+    return false
+  else
+    return true
+  end
+end
+
 def computer_places_piece!(brd)
-  if immediate_threat(brd)
+  if immediate_threat?(brd)
     find_at_risk_square(brd)
+  elsif computer_chance?(brd)
+    computer_offence(brd)
   else
     square = empty_squares(brd).sample
     brd[square] = COMPUTER_MARKER
@@ -108,10 +137,11 @@ def detect_winner(brd)
   nil
 end
 
-def immediate_threat(brd)
+def immediate_threat?(brd)
   arr = []
   arr << WINNING_LINES.select do |lines|
-    brd.values_at(*lines).count(PLAYER_MARKER) == 2
+    brd.values_at(*lines).count(PLAYER_MARKER) == 2 &&
+    brd.values_at(*lines).count(INITIAL_MARKER) == 1
   end
   arr.flatten!
   if arr.empty?
