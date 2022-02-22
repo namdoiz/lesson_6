@@ -99,10 +99,12 @@ def computer_chance?(brd)
 end
 
 def computer_places_piece!(brd)
-  if immediate_threat?(brd)
-    find_at_risk_square(brd)
-  elsif computer_chance?(brd)
+  if computer_chance?(brd)
     computer_offence(brd)
+  elsif immediate_threat?(brd)
+    find_at_risk_square(brd)
+  elsif brd[5] == ' '
+    brd[5] = COMPUTER_MARKER
   else
     square = empty_squares(brd).sample
     brd[square] = COMPUTER_MARKER
@@ -156,15 +158,59 @@ player_wins = 0
 
 loop do
   board = initialize_board
+  prompt "Do you want to decide who goes first or you want computer to decide?"
+  prompt "'1': I'll decide, '2': Let computer decide "
+  who_goes_first = gets.chomp
+  if who_goes_first == '1'
+    prompt "Do you want to go first?"
+    prompt "1 = 'yes'"
+    prompt "2 = 'no'"
 
-  loop do
-    display_board(board)
+    go_first = gets.chomp
+    if go_first == '1'
+      loop do
+        display_board(board)
+      
+        player_places_piece!(board)
+        break if someone_won?(board) || board_full?(board)
 
-    player_places_piece!(board)
-    break if someone_won?(board) || board_full?(board)
+        computer_places_piece!(board)
+        break if someone_won?(board) || board_full?(board)
+      end
+    elsif go_first == '2'
+      loop do
+        computer_places_piece!(board)
 
-    computer_places_piece!(board)
-    break if someone_won?(board) || board_full?(board)
+        display_board(board)
+        break if someone_won?(board) || board_full?(board)
+
+        player_places_piece!(board)
+        break if someone_won?(board) || board_full?(board)
+      end
+    end
+  elsif who_goes_first == '2'
+    go_first = ['1', '2'].sample
+    if go_first == '1'
+      loop do
+        display_board(board)
+      
+        player_places_piece!(board)
+        break if someone_won?(board) || board_full?(board)
+
+        computer_places_piece!(board)
+        break if someone_won?(board) || board_full?(board)
+      end
+    elsif go_first == '2'
+      loop do
+        computer_places_piece!(board)
+
+        display_board(board)
+        break if someone_won?(board) || board_full?(board)
+
+        player_places_piece!(board)
+        break if someone_won?(board) || board_full?(board)
+      end
+    end
   end
 
   display_board(board)
