@@ -158,6 +158,8 @@ player_wins = 0
 
 loop do
   board = initialize_board
+  prompt "Welcome to TIC TAC TOE!"
+  prompt "Loading..."
   prompt "Do you want to decide who goes first or you want computer to decide?"
   prompt "'1': I'll decide, '2': Let computer decide "
   who_goes_first = gets.chomp
