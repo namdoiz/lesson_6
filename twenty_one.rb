@@ -1,4 +1,3 @@
-require 'pry'
 def prompt(msg)
   puts "=> #{msg}"
 end
@@ -19,10 +18,6 @@ def dealer_over21?(cds)
   dealer_cards_sum > 21
 end
 
-
- 
-
-
 # creating the cards
 
 cards1 = {}
@@ -32,8 +27,6 @@ cards4 = {}
 pips = %w(Ace 2 3 4 5 6 7 8 9 10 Jack Queen King)
 
 suits = %w(Clubs Diamond Hearts Spades)
-
-
 
 pips.each do |pip|
   cards1[pip] = suits[0]
@@ -50,7 +43,6 @@ end
 pips.each do |pip|
   cards4[pip] = suits[3]
 end
-
 
 cards1 = cards1.to_a.map do |arr|
   arr.join(' of ')
@@ -104,7 +96,6 @@ dealer_cards << cards.to_a.sample
 
 # assigning values to ace cards if any:
 
-
 def card_values(cds)
   player_cards_values = []
   cds.each do |arr|
@@ -112,7 +103,6 @@ def card_values(cds)
   end
   player_cards_values_sum = player_cards_values.sum
   ace_index = player_cards_values.index(1)
-  #binding.pry
   if player_cards_values_sum > 21 && player_cards_values.count(11) > 0
     player_cards_values[ace_index] = 1
     player_cards_values_sum = player_cards_values.sum
@@ -121,11 +111,8 @@ def card_values(cds)
       player_cards_values_sum = player_cards_values.sum
     end
   end
-
-  #player_cards_values_sum = player_cards_values.sum
   player_cards_values_sum
 end
-
 
 def player_cards_display(cds)
   cards_display = []
@@ -145,8 +132,6 @@ def dealer_cards_display(cds)
   cards_display
 end
 
-
-
 # gameplay
 system "clear"
 prompt "Welcome to TWENTY 1"
@@ -154,14 +139,14 @@ prompt "Player, your cards are : #{player_cards[0][0]}, #{player_cards[1][0]}"
 prompt "Dealer, your cards are : #{dealer_cards[0][0]}, #{dealer_cards[1][0]}"
 puts " "
 puts " "
-loop do 
+loop do
   prompt "Player turn: hit or stay? (1 -> Hit) (2 -> Stay)"
   player_answer = gets.chomp
   if player_answer == '1' && !player_over21?(player_cards)
     player_cards << cards.to_a.sample
     if card_values(player_cards) > 21
       prompt "BUST! Dealer wins"
-      break 
+      break
     else
       prompt "Player your cards are #{player_cards_display(player_cards)}"
     end
@@ -173,7 +158,7 @@ loop do
   end
 end
 if !player_over21?(player_cards)
-  loop do 
+  loop do
     prompt "Dealer turn: hit or stay? (1 -> Hit) (2 -> Stay)"
     prompt "Dealer must hit until total is at least 17!"
     dealer_answer = gets.chomp
@@ -181,7 +166,7 @@ if !player_over21?(player_cards)
       dealer_cards << cards.to_a.sample
       if card_values(dealer_cards) > 21
         prompt "BUST! Player wins"
-        break 
+        break
       else
         prompt "Dealer your cards are #{dealer_cards_display(dealer_cards)}"
       end
@@ -211,7 +196,3 @@ puts " "
 puts " "
 puts "Thanks for playing TWENTY 1!"
 puts "Goodbye!"
-#puts card_values(dealer_cards)
-# finishing touches like oh player/dealer what card do you want to show?
-# check looping construct for the dealer loop 
-# check the dealer/ player over 21 methods and see if they are relevant
